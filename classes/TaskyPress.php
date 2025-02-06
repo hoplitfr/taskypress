@@ -7,6 +7,8 @@ class TaskyPress
 
         register_activation_hook(TASKYPRESS_PLUGIN_PATH . 'index.php', array($this, 'activate_plugin'));
 
+        register_deactivation_hook(TASKYPRESS_PLUGIN_PATH . 'index.php', array($this, 'deactivate_plugin'));
+
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
 
     }
@@ -21,6 +23,22 @@ class TaskyPress
         add_role('task_performer', 'Task Performer', array('read' => true));
         add_role('task_provider', 'Task Provider', array('read' => true));
         $this->create_tasks_table();
+    }
+
+    /**
+     * Remove custom roles and table when deactivating the plugin.
+     *
+     * @return void
+     */
+    public function deactivate_plugin(): void
+    {
+        remove_role('task_performer');
+        remove_role('task_provider');
+
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'taskypress_tasks';
+        $wpdb->query("DROP TABLE IF EXISTS $table_name");
     }
 
     /**
