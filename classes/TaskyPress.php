@@ -11,6 +11,8 @@ class TaskyPress
 
         add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
 
+        load_plugin_textdomain('taskypress', false, dirname(plugin_basename(__FILE__)) . '/languages');
+
     }
 
     /**
