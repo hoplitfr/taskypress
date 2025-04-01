@@ -96,4 +96,34 @@ class TaskyPress
         }
     }
 
+    /**
+     * Insert a new task into the database.
+     *
+     * This function inserts a new task with the specified provider ID, performer ID,
+     * title, and description into the custom tasks table.
+     *
+     * @param int    $provider_id   The ID of the task provider.
+     * @param int    $performer_id  The ID of the task performer.
+     * @param string $title         The title of the task.
+     * @param string $description   The description of the task.
+     *
+     * @return bool True if the task was successfully inserted, false otherwise.
+     */
+    public function insert_task($provider_id, $performer_id, $title, $description): bool
+    {
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'taskypress_tasks';
+
+        $sql = $wpdb->prepare(
+            "INSERT INTO $table_name (task_provider_id, task_performer_id, task_title, task_description)
+        VALUES (%d, %d, %s, %s)",
+            $provider_id,
+            $performer_id,
+            $title,
+            $description
+        );
+
+        return $wpdb->query($sql) !== false;
+    }
+
 }
