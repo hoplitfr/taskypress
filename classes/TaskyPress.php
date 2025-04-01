@@ -22,9 +22,17 @@ class TaskyPress
      */
     public function activate_plugin(): void
     {
-        add_role('task_performer', 'Task Performer', array('read' => true));
-        add_role('task_provider', 'Task Provider', array('read' => true));
-        $this->create_tasks_table();
+        if (!add_role('task_performer', 'Task Performer', array('read' => true))) {
+            error_log('Failed to add task_performer role.');
+        }
+
+        if (!add_role('task_provider', 'Task Provider', array('read' => true))) {
+            error_log('Failed to add task_provider role.');
+        }
+
+        if (!$this->create_tasks_table()) {
+            error_log('Failed to create tasks table.');
+        }
     }
 
     /**
