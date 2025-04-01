@@ -11,3 +11,7 @@
 * The Task Performer can update the percentage of the task completed and add comments or request further details.
 * Once the task is finished, the Task Performer can set the task completion to 100%.
 * The Task Provider can validate or reject the task completion.
+
+## Is it finished ?
+
+* Not yet.
