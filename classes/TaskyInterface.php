@@ -7,6 +7,7 @@ class TaskyInterface
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_post_assign_task', array($this, 'handle_assign_task'));
         add_action('admin_post_update_task_status', array($this, 'handle_update_task_status'));
+        add_action('admin_post_add_task_comment', array($this, 'handle_add_task_comment'));
         add_action('admin_post_delete_task', array($this, 'handle_delete_task'));
     }
 
@@ -98,6 +99,12 @@ class TaskyInterface
                 echo '<p>' . esc_html($task->task_description) . '</p>';
                 echo '<p>' . __('Status: ', 'taskypress') . esc_html($task->task_status) . '</p>';
 
+                // Display comments
+                if ($task->task_additional_info_requests) {
+                    echo '<p><strong>' . __('Comments:', 'taskypress') . '</strong></p>';
+                    echo '<p>' . nl2br(esc_html($task->task_additional_info_requests)) . '</p>';
+                }
+
                 // Form to update task status
                 echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
                 echo '<input type="hidden" name="action" value="update_task_status">';
@@ -111,6 +118,17 @@ class TaskyInterface
                 echo '</select>';
                 echo '<input type="submit" value="' . __('Update Status', 'taskypress') . '">';
                 echo '</form>';
+
+                // Form to add task comment
+                echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
+                echo '<input type="hidden" name="action" value="add_task_comment">';
+                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
+                wp_nonce_field('add_task_comment_action', 'add_task_comment_nonce');
+                echo '<label for="task_comment">' . __('Add Comment:', 'taskypress') . '</label>';
+                echo '<textarea name="task_comment" id="task_comment"></textarea>';
+                echo '<input type="submit" value="' . __('Add Comment', 'taskypress') . '">';
+                echo '</form>';
+
                 // Form to delete task
                 echo '<form method="post" action="' . admin_url('admin-post.php') . '" onsubmit="return confirm(\'' . __('Are you sure you want to delete this task?', 'taskypress') . '\');">';
                 echo '<input type="hidden" name="action" value="delete_task">';
@@ -182,6 +200,40 @@ class TaskyInterface
     }
 
     /**
+     * Handle the task comment addition form submission.
+     *
+     * @return void
+     */
+    public function handle_add_task_comment(): void
+    {
+        if (!isset($_POST['add_task_comment_nonce']) || !wp_verify_nonce($_POST['add_task_comment_nonce'], 'add_task_comment_action')) {
+            wp_die(__('Security check failed.', 'taskypress'));
+        }
+
+        $task_id = intval($_POST['task_id']);
+        $comment = sanitize_textarea_field($_POST['task_comment']);
+        $current_user = wp_get_current_user();
+        $user_comment = $current_user->display_name . ': ' . $comment;
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'taskypress_tasks';
+
+        $current_comments = $wpdb->get_var($wpdb->prepare("SELECT task_additional_info_requests FROM $table_name WHERE id = %d", $task_id));
+        $new_comments = $current_comments ? $current_comments . "\n" . $user_comment : $user_comment;
+
+        $wpdb->update(
+            $table_name,
+            array('task_additional_info_requests' => $new_comments),
+            array('id' => $task_id),
+            array('%s'),
+            array('%d')
+        );
+
+        wp_redirect(admin_url('admin.php?page=taskypress&task_comment_added=true'));
+        exit;
+    }
+
+    /**
      * Handle the task deletion form submission.
      *
      * @return void
@@ -227,6 +279,10 @@ class TaskyInterface
                 echo '<li>';
                 echo '<h3>' . esc_html($task->task_title) . '</h3>';
                 echo '<p>' . esc_html($task->task_description) . '</p>';
+                if ($task->task_additional_info_requests) {
+                    echo '<p><strong>' . __('Comments:', 'taskypress') . '</strong></p>';
+                    echo '<p>' . esc_html($task->task_additional_info_requests) . '</p>';
+                }
                 echo '</li>';
             }
             echo '</ul>';
