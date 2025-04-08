@@ -6,6 +6,7 @@ class TaskyInterface
     {
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_post_assign_task', array($this, 'handle_assign_task'));
+        add_action('admin_post_update_task_status', array($this, 'handle_update_task_status'));
     }
 
     /**
@@ -95,6 +96,20 @@ class TaskyInterface
                 echo '<p>' . __('Assigned to: ', 'taskypress') . esc_html(get_userdata($task->task_performer_id)->display_name) . '</p>';
                 echo '<p>' . esc_html($task->task_description) . '</p>';
                 echo '<p>' . __('Status: ', 'taskypress') . esc_html($task->task_status) . '</p>';
+
+                // Form to update task status
+                echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
+                echo '<input type="hidden" name="action" value="update_task_status">';
+                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
+                wp_nonce_field('update_task_status_action', 'update_task_status_nonce');
+                echo '<label for="task_status">' . __('Update Status:', 'taskypress') . '</label>';
+                echo '<select name="task_status" id="task_status">';
+                echo '<option value="pending" ' . selected($task->task_status, 'pending', false) . '>Pending</option>';
+                echo '<option value="in_progress" ' . selected($task->task_status, 'in_progress', false) . '>In Progress</option>';
+                echo '<option value="completed" ' . selected($task->task_status, 'completed', false) . '>Completed</option>';
+                echo '</select>';
+                echo '<input type="submit" value="' . __('Update Status', 'taskypress') . '">';
+                echo '</form>';
                 echo '</li>';
             }
             echo '</ul>';
@@ -126,6 +141,35 @@ class TaskyInterface
         } else {
             wp_die(__('Failed to assign task.', 'taskypress'));
         }
+    }
+
+    /**
+     * Handle the task status update form submission.
+     *
+     * @return void
+     */
+    public function handle_update_task_status(): void
+    {
+        if (!isset($_POST['update_task_status_nonce']) || !wp_verify_nonce($_POST['update_task_status_nonce'], 'update_task_status_action')) {
+            wp_die(__('Security check failed.', 'taskypress'));
+        }
+
+        $task_id = intval($_POST['task_id']);
+        $status = sanitize_text_field($_POST['task_status']);
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'taskypress_tasks';
+
+        $wpdb->update(
+            $table_name,
+            array('task_status' => $status),
+            array('id' => $task_id),
+            array('%s'),
+            array('%d')
+        );
+
+        wp_redirect(admin_url('admin.php?page=taskypress&task_status_updated=true'));
+        exit;
     }
 
     /**
