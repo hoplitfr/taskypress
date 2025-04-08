@@ -7,6 +7,7 @@ class TaskyInterface
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_post_assign_task', array($this, 'handle_assign_task'));
         add_action('admin_post_update_task_status', array($this, 'handle_update_task_status'));
+        add_action('admin_post_delete_task', array($this, 'handle_delete_task'));
     }
 
     /**
@@ -110,6 +111,14 @@ class TaskyInterface
                 echo '</select>';
                 echo '<input type="submit" value="' . __('Update Status', 'taskypress') . '">';
                 echo '</form>';
+                // Form to delete task
+                echo '<form method="post" action="' . admin_url('admin-post.php') . '" onsubmit="return confirm(\'' . __('Are you sure you want to delete this task?', 'taskypress') . '\');">';
+                echo '<input type="hidden" name="action" value="delete_task">';
+                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
+                wp_nonce_field('delete_task_action', 'delete_task_nonce');
+                echo '<input type="submit" value="' . __('Delete Task', 'taskypress') . '">';
+                echo '</form>';
+
                 echo '</li>';
             }
             echo '</ul>';
@@ -169,6 +178,28 @@ class TaskyInterface
         );
 
         wp_redirect(admin_url('admin.php?page=taskypress&task_status_updated=true'));
+        exit;
+    }
+
+    /**
+     * Handle the task deletion form submission.
+     *
+     * @return void
+     */
+    public function handle_delete_task(): void
+    {
+        if (!isset($_POST['delete_task_nonce']) || !wp_verify_nonce($_POST['delete_task_nonce'], 'delete_task_action')) {
+            wp_die(__('Security check failed.', 'taskypress'));
+        }
+
+        $task_id = intval($_POST['task_id']);
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'taskypress_tasks';
+
+        $wpdb->delete($table_name, array('id' => $task_id), array('%d'));
+
+        wp_redirect(admin_url('admin.php?page=taskypress&task_deleted=true'));
         exit;
     }
 
