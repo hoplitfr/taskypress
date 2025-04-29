@@ -282,9 +282,11 @@ class TaskyInterface
                 echo '<p>' . esc_html($task->task_description) . '</p>';
                 echo '<p>' . __('Status: ', 'taskypress') . esc_html($task->task_status) . '</p>';
                 echo '<p>' . __('Progress: ', 'taskypress') . esc_html($task->task_progress) . '%</p>';
+
+                // Display comments
                 if ($task->task_additional_info_requests) {
                     echo '<p><strong>' . __('Comments:', 'taskypress') . '</strong></p>';
-                    echo '<p>' . esc_html($task->task_additional_info_requests) . '</p>';
+                    echo '<p>' . nl2br(esc_html($task->task_additional_info_requests)) . '</p>';
                 }
 
                 // Form to update task status
@@ -310,6 +312,17 @@ class TaskyInterface
                 echo '<input type="number" name="task_progress" id="task_progress" min="0" max="100" value="' . esc_attr($task->task_progress) . '">';
                 echo '<input type="submit" value="' . __('Update Progress', 'taskypress') . '">';
                 echo '</form>';
+
+                // Form to add task comment
+                echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
+                echo '<input type="hidden" name="action" value="add_task_comment">';
+                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
+                wp_nonce_field('add_task_comment_action', 'add_task_comment_nonce');
+                echo '<label for="task_comment">' . __('Add Comment:', 'taskypress') . '</label>';
+                echo '<textarea name="task_comment" id="task_comment"></textarea>';
+                echo '<input type="submit" value="' . __('Add Comment', 'taskypress') . '">';
+                echo '</form>';
+
                 echo '</li>';
             }
             echo '</ul>';
