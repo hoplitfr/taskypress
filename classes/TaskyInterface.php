@@ -9,6 +9,7 @@ class TaskyInterface
         add_action('admin_post_update_task_status', array($this, 'handle_update_task_status'));
         add_action('admin_post_add_task_comment', array($this, 'handle_add_task_comment'));
         add_action('admin_post_delete_task', array($this, 'handle_delete_task'));
+        add_action('admin_post_update_task_progress', [$this, 'handle_update_task_progress']);
     }
 
     /**
@@ -280,6 +281,7 @@ class TaskyInterface
                 echo '<h3>' . esc_html($task->task_title) . '</h3>';
                 echo '<p>' . esc_html($task->task_description) . '</p>';
                 echo '<p>' . __('Status: ', 'taskypress') . esc_html($task->task_status) . '</p>';
+                echo '<p>' . __('Progress: ', 'taskypress') . esc_html($task->task_progress) . '%</p>';
                 if ($task->task_additional_info_requests) {
                     echo '<p><strong>' . __('Comments:', 'taskypress') . '</strong></p>';
                     echo '<p>' . esc_html($task->task_additional_info_requests) . '</p>';
@@ -299,11 +301,57 @@ class TaskyInterface
                 echo '<input type="submit" value="' . __('Update Status', 'taskypress') . '">';
                 echo '</form>';
 
+                // Form to update task progress
+                echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
+                echo '<input type="hidden" name="action" value="update_task_progress">';
+                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
+                wp_nonce_field('update_task_progress_action', 'update_task_progress_nonce');
+                echo '<label for="task_progress">' . __('Update Progress:', 'taskypress') . '</label>';
+                echo '<input type="number" name="task_progress" id="task_progress" min="0" max="100" value="' . esc_attr($task->task_progress) . '">';
+                echo '<input type="submit" value="' . __('Update Progress', 'taskypress') . '">';
+                echo '</form>';
                 echo '</li>';
             }
             echo '</ul>';
         } else {
             echo '<p>' . __('No tasks assigned yet.', 'taskypress') . '</p>';
         }
+    }
+
+    /**
+     * Handle the task progress update form submission.
+     *
+     * @return void
+     */
+    public function handle_update_task_progress(): void
+    {
+        if (!isset($_POST['update_task_progress_nonce']) || !wp_verify_nonce($_POST['update_task_progress_nonce'], 'update_task_progress_action')) {
+            wp_die(__('Security check failed.', 'taskypress'));
+        }
+
+        if (!isset($_POST['task_id']) || !isset($_POST['task_progress'])) {
+            wp_die(__('Missing required fields.', 'taskypress'));
+        }
+
+        $task_id = intval($_POST['task_id']);
+        $progress = intval($_POST['task_progress']);
+
+        if ($progress < 0 || $progress > 100) {
+            wp_die(__('Progress must be between 0 and 100.', 'taskypress'));
+        }
+
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'taskypress_tasks';
+
+        $wpdb->update(
+            $table_name,
+            array('task_progress' => $progress),
+            array('id' => $task_id),
+            array('%d'),
+            array('%d')
+        );
+
+        wp_redirect(admin_url('admin.php?page=taskypress&task_progress_updated=true'));
+        exit;
     }
 }
