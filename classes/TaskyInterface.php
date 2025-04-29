@@ -279,10 +279,26 @@ class TaskyInterface
                 echo '<li>';
                 echo '<h3>' . esc_html($task->task_title) . '</h3>';
                 echo '<p>' . esc_html($task->task_description) . '</p>';
+                echo '<p>' . __('Status: ', 'taskypress') . esc_html($task->task_status) . '</p>';
                 if ($task->task_additional_info_requests) {
                     echo '<p><strong>' . __('Comments:', 'taskypress') . '</strong></p>';
                     echo '<p>' . esc_html($task->task_additional_info_requests) . '</p>';
                 }
+
+                // Form to update task status
+                echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
+                echo '<input type="hidden" name="action" value="update_task_status">';
+                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
+                wp_nonce_field('update_task_status_action', 'update_task_status_nonce');
+                echo '<label for="task_status">' . __('Update Status:', 'taskypress') . '</label>';
+                echo '<select name="task_status" id="task_status">';
+                echo '<option value="pending" ' . selected($task->task_status, 'pending', false) . '>Pending</option>';
+                echo '<option value="in_progress" ' . selected($task->task_status, 'in_progress', false) . '>In Progress</option>';
+                echo '<option value="completed" ' . selected($task->task_status, 'completed', false) . '>Completed</option>';
+                echo '</select>';
+                echo '<input type="submit" value="' . __('Update Status', 'taskypress') . '">';
+                echo '</form>';
+
                 echo '</li>';
             }
             echo '</ul>';
