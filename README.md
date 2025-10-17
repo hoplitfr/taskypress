@@ -15,3 +15,8 @@
 ## Is it finished ?
 
 * Yes ! The first version of this plugin is complete ! (2025-10-18)
+
+## TO DO
+
+* [ ] Ask if user is willing to keep the data (roles and tasks) when deactivating the plugin
+* [ ] Add tags/filter for tasks on the user dashboard
