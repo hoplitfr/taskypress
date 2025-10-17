@@ -9,7 +9,7 @@ class TaskyPress
 
         register_deactivation_hook(TASKYPRESS_PLUGIN_PATH . 'index.php', array($this, 'deactivate_plugin'));
 
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_styles'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_styles'));
 
         load_plugin_textdomain('taskypress', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
