@@ -7,7 +7,9 @@
                 <h3><?php echo esc_html($task->task_title); ?></h3>
                 <p><?php echo esc_html($task->task_description); ?></p>
                 <p><strong><?php _e('Status:', 'taskypress'); ?></strong> <?php echo esc_html($task->task_status); ?></p>
-                <p><strong><?php _e('Progress:', 'taskypress'); ?></strong> <?php echo esc_html($task->task_progress); ?>%</p>
+                <p><strong><?php _e('Progress:', 'taskypress'); ?></strong></p>
+                <progress value="<?php echo esc_attr($task->task_progress); ?>" max="100" style="width:25%; height:20px;"></progress>
+                <br><span><?php echo esc_html($task->task_progress); ?>%</span>
 
                 <?php if ($task->task_additional_info_requests): ?>
                     <p><strong><?php _e('Comments:', 'taskypress'); ?></strong></p>
