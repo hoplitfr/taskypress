@@ -14,4 +14,4 @@
 
 ## Is it finished ?
 
-* Not yet.
+* Yes ! The first version of this plugin is complete ! (2025-10-18)

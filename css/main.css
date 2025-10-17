@@ -1,0 +1,145 @@
+/* === Scoped container === */
+.taskypress-admin-wrap {
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+    line-height: 1.6;
+    color: #333;
+    padding: 20px;
+}
+
+/* === Headings === */
+.taskypress-admin-wrap h2 {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+    color: #0073aa;
+    border-bottom: 2px solid #0073aa;
+    padding-bottom: 5px;
+}
+
+.taskypress-admin-wrap h3 {
+    font-size: 1.3em;
+    margin: 10px 0 5px;
+    color: #222;
+}
+
+/* === Forms === */
+.taskypress-admin-wrap form {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.taskypress-admin-wrap form label {
+    display: block;
+    margin: 8px 0 3px;
+    font-weight: 600;
+}
+
+.taskypress-admin-wrap form input[type="text"],
+.taskypress-admin-wrap form textarea,
+.taskypress-admin-wrap form select,
+.taskypress-admin-wrap form input[type="number"] {
+    width: 100%;
+    padding: 6px 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+.taskypress-admin-wrap form textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+.taskypress-admin-wrap form input[type="submit"].button,
+.taskypress-admin-wrap form input[type="submit"].button.button-primary,
+.taskypress-admin-wrap form input[type="submit"].button.button-secondary {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.taskypress-admin-wrap form input[type="submit"].button.button-primary {
+    background-color: #0073aa;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+}
+
+.taskypress-admin-wrap form input[type="submit"].button.button-primary:hover {
+    background-color: #006799;
+}
+
+.taskypress-admin-wrap form input[type="submit"].button.button-secondary {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    padding: 6px 14px;
+}
+
+.taskypress-admin-wrap form input[type="submit"].button.button-secondary:hover {
+    background-color: #b3b3b3;
+}
+
+/* === Task grid === */
+.task-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 20px;
+}
+
+/* === Task cards === */
+.task-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: transform 0.1s ease;
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+}
+
+/* === Progress bar === */
+.task-card progress {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.task-card progress::-webkit-progress-bar {
+    background-color: #eee;
+    border-radius: 10px;
+}
+
+.task-card progress::-webkit-progress-value {
+    background-color: #0073aa;
+    border-radius: 10px;
+}
+
+.task-card progress::-moz-progress-bar {
+    background-color: #0073aa;
+    border-radius: 10px;
+}
+
+.task-card span {
+    font-weight: 600;
+}
+
+/* === Comments === */
+.task-card p:last-child {
+    background: #f1f1f1;
+    padding: 8px;
+    border-radius: 5px;
+    white-space: pre-wrap;
+    font-family: monospace;
+}
