@@ -1,14 +1,15 @@
+<div class="taskypress-admin-wrap">
 <h2><?php _e('Your Assigned Tasks', 'taskypress'); ?></h2>
 
 <?php if ($tasks): ?>
-    <ul>
+    <div class="task-list-grid">
         <?php foreach ($tasks as $task): ?>
-            <li>
+            <div class="task-card">
                 <h3><?php echo esc_html($task->task_title); ?></h3>
                 <p><?php echo esc_html($task->task_description); ?></p>
                 <p><strong><?php _e('Status:', 'taskypress'); ?></strong> <?php echo esc_html($task->task_status); ?></p>
                 <p><strong><?php _e('Progress:', 'taskypress'); ?></strong></p>
-                <progress value="<?php echo esc_attr($task->task_progress); ?>" max="100" style="width:25%; height:20px;"></progress>
+                <progress value="<?php echo esc_attr($task->task_progress); ?>" max="100"></progress>
                 <br><span><?php echo esc_html($task->task_progress); ?>%</span>
 
                 <?php if ($task->task_additional_info_requests): ?>
@@ -62,9 +63,10 @@
                     <textarea name="task_comment" id="task_comment_<?php echo esc_attr($task->id); ?>"></textarea>
                     <input type="submit" class="button" value="<?php esc_attr_e('Add Comment', 'taskypress'); ?>">
                 </form>
-            </li>
+            </div>
         <?php endforeach; ?>
-    </ul>
+    </div>
 <?php else: ?>
     <p><?php _e('No tasks assigned yet.', 'taskypress'); ?></p>
 <?php endif; ?>
+</div>

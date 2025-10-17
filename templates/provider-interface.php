@@ -1,3 +1,4 @@
+<div class="taskypress-admin-wrap">
 <h2><?php _e('Assign Task', 'taskypress'); ?></h2>
 
 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
@@ -25,16 +26,16 @@
 <h2><?php _e('Assigned Tasks', 'taskypress'); ?></h2>
 
 <?php if ($assigned_tasks): ?>
-    <ul>
+    <div class="task-list-grid">
         <?php foreach ($assigned_tasks as $task): ?>
-            <li>
+            <div class="task-card">
                 <h3><?php echo esc_html($task->task_title); ?></h3>
                 <p><?php _e('Assigned to:', 'taskypress'); ?>
                     <?php echo esc_html(get_userdata($task->task_performer_id)->display_name); ?></p>
                 <p><?php echo esc_html($task->task_description); ?></p>
                 <p><strong><?php _e('Status:', 'taskypress'); ?></strong> <?php echo esc_html($task->task_status); ?></p>
                 <p><strong><?php _e('Progress:', 'taskypress'); ?></strong></p>
-                <progress value="<?php echo esc_attr($task->task_progress); ?>" max="100" style="width:25%; height:20px;"></progress>
+                <progress value="<?php echo esc_attr($task->task_progress); ?>" max="100"></progress>
                 <br><span><?php echo esc_html($task->task_progress); ?>%</span>
 
                 <?php if ($task->task_additional_info_requests): ?>
@@ -76,9 +77,10 @@
                     <?php wp_nonce_field('delete_task_action', 'delete_task_nonce'); ?>
                     <input type="submit" class="button button-secondary" value="<?php esc_attr_e('Delete Task', 'taskypress'); ?>">
                 </form>
-            </li>
+            </div>
         <?php endforeach; ?>
-    </ul>
+    </div>
 <?php else: ?>
     <p><?php _e('No tasks assigned yet.', 'taskypress'); ?></p>
 <?php endif; ?>
+</div>
