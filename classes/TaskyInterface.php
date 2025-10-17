@@ -68,81 +68,9 @@ class TaskyInterface
             $current_user->ID
         ));
 
-        echo '<h2>' . __('Assign Task', 'taskypress') . '</h2>';
-        echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
-        echo '<input type="hidden" name="action" value="assign_task">';
-        wp_nonce_field('assign_task_action','assign_task_nonce');
-
-        echo '<label for="task_performer_id">' . __('Select Task Performer:', 'taskypress') . '</label>';
-        echo '<select name="task_performer_id" id="task_performer_id">';
-        foreach ($performers as $performer) {
-            echo '<option value="' . esc_attr($performer->ID) . '">' . esc_html($performer->display_name) . '</option>';
-        }
-        echo '</select>';
-
-        echo '<label for="task_title">' . __('Task Title:', 'taskypress') . '</label>';
-        echo '<input type="text" name="task_title" id="task_title" required>';
-
-        echo '<label for="task_description">' . __('Task Description:', 'taskypress') . '</label>';
-        echo '<textarea name="task_description" id="task_description" required></textarea>';
-
-        echo '<input type="submit" value="' . __('Assign Task', 'taskypress') . '">';
-        echo '</form>';
-
-        // Display assigned tasks
-        echo '<h2>' . __('Assigned Tasks', 'taskypress') . '</h2>';
-        if ($assigned_tasks) {
-            echo '<ul>';
-            foreach ($assigned_tasks as $task) {
-                echo '<li>';
-                echo '<h3>' . esc_html($task->task_title) . '</h3>';
-                echo '<p>' . __('Assigned to: ', 'taskypress') . esc_html(get_userdata($task->task_performer_id)->display_name) . '</p>';
-                echo '<p>' . esc_html($task->task_description) . '</p>';
-                echo '<p>' . __('Status: ', 'taskypress') . esc_html($task->task_status) . '</p>';
-
-                // Display comments
-                if ($task->task_additional_info_requests) {
-                    echo '<p><strong>' . __('Comments:', 'taskypress') . '</strong></p>';
-                    echo '<p>' . nl2br(esc_html($task->task_additional_info_requests)) . '</p>';
-                }
-
-                // Form to update task status
-                echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
-                echo '<input type="hidden" name="action" value="update_task_status">';
-                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
-                wp_nonce_field('update_task_status_action', 'update_task_status_nonce');
-                echo '<label for="task_status">' . __('Update Status:', 'taskypress') . '</label>';
-                echo '<select name="task_status" id="task_status">';
-                echo '<option value="pending" ' . selected($task->task_status, 'pending', false) . '>Pending</option>';
-                echo '<option value="in_progress" ' . selected($task->task_status, 'in_progress', false) . '>In Progress</option>';
-                echo '<option value="completed" ' . selected($task->task_status, 'completed', false) . '>Completed</option>';
-                echo '</select>';
-                echo '<input type="submit" value="' . __('Update Status', 'taskypress') . '">';
-                echo '</form>';
-
-                // Form to add task comment
-                echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
-                echo '<input type="hidden" name="action" value="add_task_comment">';
-                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
-                wp_nonce_field('add_task_comment_action', 'add_task_comment_nonce');
-                echo '<label for="task_comment">' . __('Add Comment:', 'taskypress') . '</label>';
-                echo '<textarea name="task_comment" id="task_comment"></textarea>';
-                echo '<input type="submit" value="' . __('Add Comment', 'taskypress') . '">';
-                echo '</form>';
-
-                // Form to delete task
-                echo '<form method="post" action="' . admin_url('admin-post.php') . '" onsubmit="return confirm(\'' . __('Are you sure you want to delete this task?', 'taskypress') . '\');">';
-                echo '<input type="hidden" name="action" value="delete_task">';
-                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
-                wp_nonce_field('delete_task_action', 'delete_task_nonce');
-                echo '<input type="submit" value="' . __('Delete Task', 'taskypress') . '">';
-                echo '</form>';
-
-                echo '</li>';
-            }
-            echo '</ul>';
-        } else {
-            echo '<p>' . __('No tasks assigned yet.', 'taskypress') . '</p>';
+        $template = TASKYPRESS_PLUGIN_PATH . 'templates/provider-interface.php';
+        if (file_exists($template)) {
+            include $template;
         }
     }
 
@@ -273,61 +201,9 @@ class TaskyInterface
             $current_user->ID
         ));
 
-        echo '<h2>' . __('Your Assigned Tasks', 'taskypress') . '</h2>';
-        if ($tasks) {
-            echo '<ul>';
-            foreach ($tasks as $task) {
-                echo '<li>';
-                echo '<h3>' . esc_html($task->task_title) . '</h3>';
-                echo '<p>' . esc_html($task->task_description) . '</p>';
-                echo '<p>' . __('Status: ', 'taskypress') . esc_html($task->task_status) . '</p>';
-                echo '<p>' . __('Progress: ', 'taskypress') . esc_html($task->task_progress) . '%</p>';
-
-                // Display comments
-                if ($task->task_additional_info_requests) {
-                    echo '<p><strong>' . __('Comments:', 'taskypress') . '</strong></p>';
-                    echo '<p>' . nl2br(esc_html($task->task_additional_info_requests)) . '</p>';
-                }
-
-                // Form to update task status
-                echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
-                echo '<input type="hidden" name="action" value="update_task_status">';
-                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
-                wp_nonce_field('update_task_status_action', 'update_task_status_nonce');
-                echo '<label for="task_status">' . __('Update Status:', 'taskypress') . '</label>';
-                echo '<select name="task_status" id="task_status">';
-                echo '<option value="pending" ' . selected($task->task_status, 'pending', false) . '>Pending</option>';
-                echo '<option value="in_progress" ' . selected($task->task_status, 'in_progress', false) . '>In Progress</option>';
-                echo '<option value="completed" ' . selected($task->task_status, 'completed', false) . '>Completed</option>';
-                echo '</select>';
-                echo '<input type="submit" value="' . __('Update Status', 'taskypress') . '">';
-                echo '</form>';
-
-                // Form to update task progress
-                echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
-                echo '<input type="hidden" name="action" value="update_task_progress">';
-                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
-                wp_nonce_field('update_task_progress_action', 'update_task_progress_nonce');
-                echo '<label for="task_progress">' . __('Update Progress:', 'taskypress') . '</label>';
-                echo '<input type="number" name="task_progress" id="task_progress" min="0" max="100" value="' . esc_attr($task->task_progress) . '">';
-                echo '<input type="submit" value="' . __('Update Progress', 'taskypress') . '">';
-                echo '</form>';
-
-                // Form to add task comment
-                echo '<form method="post" action="' . admin_url('admin-post.php') . '">';
-                echo '<input type="hidden" name="action" value="add_task_comment">';
-                echo '<input type="hidden" name="task_id" value="' . esc_attr($task->id) . '">';
-                wp_nonce_field('add_task_comment_action', 'add_task_comment_nonce');
-                echo '<label for="task_comment">' . __('Add Comment:', 'taskypress') . '</label>';
-                echo '<textarea name="task_comment" id="task_comment"></textarea>';
-                echo '<input type="submit" value="' . __('Add Comment', 'taskypress') . '">';
-                echo '</form>';
-
-                echo '</li>';
-            }
-            echo '</ul>';
-        } else {
-            echo '<p>' . __('No tasks assigned yet.', 'taskypress') . '</p>';
+        $template = TASKYPRESS_PLUGIN_PATH . 'templates/performer-interface.php';
+        if (file_exists($template)) {
+            include $template;
         }
     }
 
