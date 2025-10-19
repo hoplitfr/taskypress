@@ -12,6 +12,16 @@
 * Once the task is finished, the Task Performer can set the task completion to 100%.
 * The Task Provider can validate or reject the task completion.
 
+## Screenshots
+
+### Task overview from the task provider view.
+
+![screenshot-1.png](assets/screenshot-1.png)
+
+### Task overview from the task performer view.
+
+![screenshot-2.png](assets/screenshot-2.png)
+
 ## Is it finished ?
 
 * Yes ! The first version of this plugin is complete ! (2025-10-18)
