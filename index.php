@@ -9,7 +9,7 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Plugin URI: https://www.hoplit.fr/developpement-de-plugins-sur-mesure/
  * Author: Hoplitfr
- * Author URI: ttps://www.hoplit.fr/
+ * Author URI: https://www.hoplit.fr/
  */
 
 if (!defined('ABSPATH')) {
