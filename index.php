@@ -3,8 +3,13 @@
 /**
  * Plugin Name: TaskyPress
  * Description: A WordPress plugin to assign and track tasks
- * Version: 1.0
+ * Version: 1.0.0
+ * Text Domain: taskypress
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Plugin URI: https://www.hoplit.fr/developpement-de-plugins-sur-mesure/
  * Author: Hoplitfr
+ * Author URI: ttps://www.hoplit.fr/
  */
 
 if (!defined('ABSPATH')) {
